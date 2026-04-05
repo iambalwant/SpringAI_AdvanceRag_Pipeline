@@ -1,19 +1,6 @@
-#app:
-#  datasource:
-#    main:
-#      driver-class-name: org.postgresql.Driver
-#      jdbc-url: jdbc:postgresql://localhost:5432/balwant
-#      username: admin
-#      password: 'password'
-#      pool-size: 30
-
 spring:
   application:
     name: ollama
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/admin?currentSchema=spring_ai_yt
-#    username: admin
-#    password: password
   datasource:
     url: jdbc:mariadb://localhost:3308/springAi
     username: root
@@ -27,12 +14,6 @@ spring:
         initialize-schema: true
         distance-type: COSINE
         dimensions: 1024
-#      memory:
-#        repository:
-#          jdbc:
-#            initialize-schema: ALWAYS
-#    openai:
-#      api-key: ${OPENAI_API_KEY}
     ollama:
       base-url: http://localhost:11434
       embedding:
@@ -45,4 +26,3 @@ logging:
    org.springframework.ai.chat.client.advisor: DEBUG
 server:
   port: 9009
-#api key for open AI

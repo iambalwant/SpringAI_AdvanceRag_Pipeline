@@ -28,10 +28,9 @@ public class ChatController {
             @RequestParam(
                     value = "q",
                     required = true
-            ) String q,
-            @RequestHeader("userId") String userID
+            ) String q
     ){
-        return new ResponseEntity<>(chatService.ragChatRetrievalAugmentationAdvisor(q, userID), HttpStatus.OK);
+        return new ResponseEntity<>(chatService.ragChat(q), HttpStatus.OK);
 
     }
 }

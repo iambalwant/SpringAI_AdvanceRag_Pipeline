@@ -55,80 +55,11 @@ public class ChatServiceImp implements ChatService {
 
 
     }
+
     @Override
-    public String ragChat(String query, String userId) {
-
-        //load data from vector data base
-
-        SearchRequest searchRequest = SearchRequest
-                .builder()
-                .topK(3)
-                .similarityThreshold(0.6)
-                .query(query)
-                .build();
-
-        List<Document> documents = this.vectorStore.similaritySearch(searchRequest);
-        List<String> documentList = documents.stream().map(Document::getText).toList();
-        String contextData = String.join(" , ", documentList);
-        this.logger.info("Context data : {} ",contextData);
-        //similar results user query
-        //pass in context
-
-
-        return chatClient
-                .prompt()
-                .system(system -> system.text(this.systemMessage).param("documents", contextData))
-                .user(user -> user.text(this.userMessage).param("query", query))
-                .call()
-                .content();
+    public String ragChat(String query) {
+        return "This is testing service";
     }
 
 
-    //QuestionAnswerAdvisor
-    @Override
-    public String ragChatQuestionAnserAdvicsor(String query, String userId) {
-
-        QuestionAnswerAdvisor questionAnswerAdvisor = QuestionAnswerAdvisor.builder(vectorStore)
-                .searchRequest(
-                        SearchRequest.builder()
-                                .topK(3)
-                                .similarityThreshold(0.6)
-                                .build()
-                )
-                .build();
-
-        return chatClient
-                .prompt()
-                .advisors(questionAnswerAdvisor)
-                .user(user -> user.text(this.userMessage).param("query", query))
-                .call()
-                .content();
-    }
-    //RetrievalAugmentationAdvisor
-    @Override
-    public String ragChatRetrievalAugmentationAdvisor(String query, String userId) {
-
-        var advisor = RetrievalAugmentationAdvisor.builder()
-                .documentRetriever(
-                        VectorStoreDocumentRetriever.builder()
-                                .vectorStore(vectorStore)
-                                .topK(3)
-                                .similarityThreshold(0.5)
-                                .build()
-                )
-                .queryAugmenter(ContextualQueryAugmenter
-                        .builder()
-                        .allowEmptyContext(true)
-//                        .promptTemplate() //if you don't want to use default prompt template
-                        .build())
-                .build();
-
-
-        return chatClient
-                .prompt()
-                .advisors(advisor)
-                .user(user -> user.text(this.userMessage).param("query", query))
-                .call()
-                .content();
-    }
 }
