@@ -12,6 +12,9 @@ import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
 import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
+import org.springframework.ai.rag.preretrieval.query.expansion.MultiQueryExpander;
+import org.springframework.ai.rag.preretrieval.query.transformation.RewriteQueryTransformer;
+import org.springframework.ai.rag.retrieval.join.ConcatenationDocumentJoiner;
 import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -58,7 +61,37 @@ public class ChatServiceImp implements ChatService {
 
     @Override
     public String ragChat(String query) {
-        return "This is testing service";
+        //pre-Retrieval   Rewrite/Transform your query
+        var advisor = RetrievalAugmentationAdvisor
+                .builder()
+                .queryTransformers(
+                        RewriteQueryTransformer
+                                .builder()
+                                .chatClientBuilder(chatClient.mutate().clone())
+                                .build()
+                )
+                .queryExpander(MultiQueryExpander.builder().chatClientBuilder(chatClient.mutate().clone()).build())
+                //Retrieval Module
+                .documentRetriever(
+                        VectorStoreDocumentRetriever.builder()
+                                .vectorStore(vectorStore)
+                                .topK(3)
+                                .similarityThreshold(0.5)
+                                .build()
+                )
+                .documentJoiner(new ConcatenationDocumentJoiner())
+                .queryAugmenter(ContextualQueryAugmenter.builder().build())
+                .build();
+
+        //actual call to LLM
+
+
+        return chatClient
+                .prompt()
+                .advisors(advisor)
+                .user(query)
+                .call()
+                .content();
     }
 
 

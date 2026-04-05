@@ -1,8 +1,6 @@
 package com.spring.ai.practice.controller;
 
 
-import com.spring.ai.practice.entity.Tut;
-import com.spring.ai.practice.service.ChatServiceImp;
 import com.spring.ai.practice.service.Interface.ChatService;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.HttpStatus;
