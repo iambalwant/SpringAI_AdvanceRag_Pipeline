@@ -6,6 +6,7 @@ import com.spring.ai.practice.service.Interface.DataLoader;
 import com.spring.ai.practice.service.Interface.DataTransformerService;
 import org.junit.jupiter.api.Test;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,6 +28,9 @@ class ApplicationTests {
 
 	@Autowired
 	private DataTransformerService dataTransformerService;
+
+	@Autowired
+	private VectorStore vectorStore;
 
 	@Test
     void saveDataToVectorDatabase(){
@@ -61,6 +65,11 @@ class ApplicationTests {
 
 		List<Document> transformDocument = this.dataTransformerService.transform(documents);
 		System.out.println(transformDocument);
+
+		//going to save the data into database
+
+		this.vectorStore.add(transformDocument);
+		System.out.println("done");
 	}
 	
 	

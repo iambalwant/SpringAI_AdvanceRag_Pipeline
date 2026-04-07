@@ -2,7 +2,7 @@ spring:
   application:
     name: ollama
   datasource:
-    url: jdbc:mariadb://localhost:3308/springAi
+    url: jdbc:mariadb://localhost:3308/ETLdatabase
     username: root
     password: password
   ai:
